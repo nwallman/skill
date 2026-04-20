@@ -1,0 +1,81 @@
+# crap-buster configuration
+# Copy this file to your project root as `.crap-buster.yml` on first run.
+# All fields are optional; defaults shown below.
+
+crap:
+  # Target CRAP score — every non-excluded method should end below this.
+  # Uncle Bob said < 5 in the video. In practice, 5 requires complexity 2
+  # at 100% coverage, which isn't realistic for most Spring services.
+  # 10 is aggressive but achievable. Raise for legacy codebases, lower
+  # for greenfield modules.
+  target: 10
+  # Methods above this get highest priority in every phase.
+  hard_ceiling: 30
+
+coverage:
+  # Line coverage target; Phase 2 stops per-method work once each non-excluded
+  # method is at or above this.
+  line_target: 0.85
+
+mutation:
+  # Mutation score target for Phase 3 stopping condition.
+  score_target: 0.75
+  # Refactors in Phase 4 revert if the affected class's mutation score drops
+  # by more than this many percentage points.
+  regression_tolerance: 2
+  # "full" (mutate everything with tests) or "changed-since:<git-ref>"
+  # (mutate only classes changed vs. the ref).
+  # Full runs are slow; for weekly runs use full, for PR validation use changed-since.
+  scope: full
+  # Mutations PIT can't kill because they're semantically equivalent.
+  # Each entry: class FQN, line, mutator short name, reason.
+  excluded_mutations: []
+  # Example:
+  # excluded_mutations:
+  #   - class: com.example.api.UserService
+  #     line: 42
+  #     mutator: VoidMethodCall
+  #     reason: logging-only side effect, not part of contract
+
+# Hard stop for the entire run. Phase budgets are derived proportionally:
+# 10% preflight+baseline, 30% cover, 40% mutate, 20% decompose+report.
+time_budget_minutes: 180
+
+# Paths, packages, and methods the skill should never touch.
+# Prefer excluding at the package level unless you have a specific reason to
+# exclude a single class or method.
+exclude:
+  # Glob patterns relative to src/main/java — classes matching are ignored
+  # for test generation, mutation testing, and refactoring.
+  classes:
+    - "**/*Application.java"
+    - "**/*Configuration.java"
+    - "**/config/**"
+    - "**/generated/**"
+  # Fully-qualified class names to exclude entirely.
+  packages: []
+  # Specific methods, for when a class is mostly fine but one method is
+  # irreducibly complex (parsers, state machines). Format: "com.example.Foo.bar".
+  methods: []
+  # Example:
+  # methods:
+  #   - "com.example.api.ProtocolParser.parse"  # inherently branchy state machine
+  #   - "com.example.api.MigrationRunner.apply" # version dispatch, 14 cases
+
+# Commit policy. The skill will honor these even for refactors.
+commit:
+  # Max changes per commit in Phase 2 (test coverage). Keep small for reviewability.
+  max_methods_per_test_commit: 8
+  # Whether to sign commits if a signing key is configured for the repo.
+  sign: false
+
+# Pull request settings (used in Phase 5 if gh CLI is available).
+pull_request:
+  # Base branch to open the PR against.
+  base: main
+  # Labels to apply. Leave empty if your repo doesn't use these.
+  labels:
+    - quality
+    - automated
+  # Reviewers to request. Empty = no automatic reviewer requests.
+  reviewers: []
