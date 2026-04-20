@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Build artifacts (packaged skills)
+*.skill
+
+# Eval workspaces — skill-creator writes these as siblings of each skill when testing
+*-workspace/
+
+# Per-skill eval data is optional to commit; exclude by default, opt in per-skill if desired
+*/evals/
