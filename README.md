@@ -22,6 +22,7 @@ One skill per folder. The folder name must match the `name` field in the skill's
 | Skill | Purpose |
 | --- | --- |
 | [code-handoff](./code-handoff/) | Hand off a software plan built in Cowork to Claude Code in a dedicated git worktree, with a review-first preamble. |
+| [crap-buster](./crap-buster/) | Autonomous code-hardening pass for Java/Spring Boot projects: JaCoCo coverage, PIT mutation testing, complexity refactors, and CRAP-score reporting against hard quality gates. |
 | [local-seo-optimizer](./local-seo-optimizer/) | Full local SEO overhaul for React + Vite + TypeScript client sites. |
 
 ## Adding a new skill
